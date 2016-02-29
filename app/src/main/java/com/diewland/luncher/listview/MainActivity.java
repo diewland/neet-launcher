@@ -5,18 +5,19 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.google.gson.Gson;
@@ -75,7 +76,7 @@ public class MainActivity extends Activity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.d(TAG, s.toString());
+                // Log.d(TAG, s.toString());
                 reload_items();
             }
 
@@ -138,24 +139,32 @@ public class MainActivity extends Activity {
         // remove all first
         ll.removeAllViews();
 
+        // filter items
+        sorted_items = Util.score_sort(app_list.values());
+        sorted_items = Util.filter(sorted_items, txt_search.getText().toString());
+
         // draw text buttons
         /*
-        for(Item info : Util.score_sort(app_list.values())){
+        */
+        for(Item info : sorted_items){
 
             Button btn = new Button(this);
             btn.setText(info.getTitle());
 
             // button style
             btn.setTextSize(25);
-            //btn.setTextColor(Color.parseColor("#EEEEEE"));
-            //btn.setBackgroundColor(Color.parseColor("#333333"));
             btn.setGravity(Gravity.LEFT);
+            btn.setGravity(Gravity.CENTER_VERTICAL);
+
+            Bitmap bitmap = ((BitmapDrawable) icon_list.get(info.getPackage())).getBitmap();
+            Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 96, 96, true));
+
+            btn.setCompoundDrawablesWithIntrinsicBounds( null, null, d, null);
 
             // click button
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // get app info
                     Button b = (Button) v;
                     String title = b.getText().toString();
                     Item info = Util.get_info_from_title(app_list, title);
@@ -172,11 +181,9 @@ public class MainActivity extends Activity {
             // add item
             ll.addView(btn, lp);
         }
-        */
 
         // draw icon buttons
-        sorted_items = Util.score_sort(app_list.values());
-        sorted_items = Util.filter(sorted_items, txt_search.getText().toString());
+        /*
         ImageButton[] ibs = new ImageButton[sorted_items.size()];
 
         // initialize buttons
@@ -213,6 +220,7 @@ public class MainActivity extends Activity {
             // add item
             ll.addView(ib, lp);
         }
+        */
 
     }
 
