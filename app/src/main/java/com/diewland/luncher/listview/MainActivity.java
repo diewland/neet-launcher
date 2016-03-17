@@ -54,7 +54,7 @@ public class MainActivity extends Activity {
         ll = (LinearLayout)findViewById(R.id.ll);
         lp = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT, // width
-            120 // LinearLayout.LayoutParams.WRAP_CONTENT  // height
+            /*120 */ LinearLayout.LayoutParams.WRAP_CONTENT  // height
         );
         lp.setMargins(0, 0, 0, -12);
         txt_search = (EditText)findViewById(R.id.txt_search);
@@ -152,13 +152,13 @@ public class MainActivity extends Activity {
             btn.setText(info.getTitle());
 
             // button style
-            btn.setTextSize(25);
+            btn.setTextAppearance(this, android.R.style.TextAppearance_Large);
             btn.setGravity(Gravity.LEFT);
             btn.setGravity(Gravity.CENTER_VERTICAL);
 
             Bitmap bitmap = ((BitmapDrawable) icon_list.get(info.getPackage())).getBitmap();
-            Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 96, 96, true));
-
+            Drawable d = new BitmapDrawable(getResources(), bitmap);
+            d.setBounds(0, 0, d.getMinimumWidth(), d.getMinimumHeight());
             btn.setCompoundDrawablesWithIntrinsicBounds( null, null, d, null);
 
             // click button
