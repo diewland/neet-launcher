@@ -263,7 +263,9 @@ public class MainActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_refresh) {
-            reload_items();
+            // restart activity
+            finish();
+            startActivity(getIntent());
             Toast.makeText(this, "Refresh done", Toast.LENGTH_LONG).show();
             return true;
         }
