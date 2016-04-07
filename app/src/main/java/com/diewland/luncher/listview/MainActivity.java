@@ -8,6 +8,7 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -66,6 +67,18 @@ public class MainActivity extends Activity {
 
         // draw items
         reload_items();
+
+        // instant googling
+        ll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getApplicationContext(), "Googling...", Toast.LENGTH_SHORT).show();
+                String q = txt_search.getText().toString();
+                Uri uri = Uri.parse("https://www.google.co.th/search?q=" + q);
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+            }
+        });
 
         // bind search bar
         txt_search.addTextChangedListener(new TextWatcher() {
