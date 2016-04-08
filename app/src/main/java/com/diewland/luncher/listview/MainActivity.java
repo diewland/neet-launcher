@@ -10,6 +10,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -20,15 +21,23 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.gson.Gson;
-
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends Activity {
 
+    private TextView bg;
     private LinearLayout ll;
     private LinearLayout.LayoutParams lp;
     private EditText txt_search;
@@ -40,6 +49,8 @@ public class MainActivity extends Activity {
     private SharedPreferences mPrefs;
 
     private String TAG = "DIEWLAND";
+    private String backup_filename = "neet.dat";
+    private String deli = "#####";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +64,7 @@ public class MainActivity extends Activity {
         mPrefs = getPreferences(MODE_PRIVATE);
 
         // initialize layout vars
+        bg = (TextView)findViewById(R.id.bg);
         ll = (LinearLayout)findViewById(R.id.ll);
         lp = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT, // width
@@ -157,9 +169,15 @@ public class MainActivity extends Activity {
         sorted_items = Util.score_sort(app_list.values());
         sorted_items = Util.filter(sorted_items, txt_search.getText().toString());
 
+        // handle background text
+        if(sorted_items.size() > 0){
+            bg.setText("");
+        }
+        else {
+            bg.setText("Double Tap\nto Search");
+        }
+
         // draw text buttons
-        /*
-        */
         for(Item info : sorted_items){
 
             Button btn = new Button(this);
@@ -196,8 +214,8 @@ public class MainActivity extends Activity {
             ll.addView(btn, lp);
         }
 
-        // draw icon buttons
         /*
+        // draw icon buttons
         ImageButton[] ibs = new ImageButton[sorted_items.size()];
 
         // initialize buttons
@@ -238,6 +256,55 @@ public class MainActivity extends Activity {
 
     }
 
+    private File get_backup_file(){
+        String externalStorage = Environment.getExternalStorageDirectory().getAbsolutePath();
+        return new File(externalStorage + File.separator + backup_filename);
+    }
+
+    private void backup() throws IOException {
+        File file = get_backup_file();
+        FileOutputStream f = new FileOutputStream(file);
+        PrintWriter pw = new PrintWriter(f);
+         for(Item app : app_list.values()){
+            pw.println(app.getPackage()
+                        + deli + app.getTitle()
+                        + deli + app.getScore()
+            );
+        }
+
+        // TODO *** make visible from windows explorer ( after write, before flush & close )
+        // TODO *** MediaScannerConnection.scanFile(this, new String[] {file.toString()}, null, null);
+        // TODO *** MediaScannerConnection.scanFile(this, new String[]{ externalStorage }, null, null);
+
+        pw.flush();
+        pw.close();
+        f.close();
+
+        // toast some message
+        Toast.makeText(getApplicationContext(), "Backup to " + file.toString(), Toast.LENGTH_LONG).show();
+    }
+
+    private void restore() throws IOException {
+        // prepare file
+        File file = get_backup_file();
+        InputStream is = new FileInputStream(file);
+        String UTF8 = "utf8";
+        int BUFFER_SIZE = 8192;
+        BufferedReader br = new BufferedReader(new InputStreamReader(is, UTF8), BUFFER_SIZE);
+        String str;
+
+        // reload app_list
+        app_list.clear();
+        while ((str = br.readLine()) != null) {
+            String[] data = str.split(deli);
+            app_list.put(data[0], new Item(data[1], data[0], Integer.parseInt(data[2])));
+        }
+        reload_items();
+
+        // toast some message
+        Toast.makeText(getApplicationContext(), "Restore complete", Toast.LENGTH_LONG).show();
+    }
+
     private void debug(){
         for(Item app : app_list.values()){
             Log.d(TAG, app.getPackage() + "\t" + app.getTitle() + "\t" + app.getScore());
@@ -274,16 +341,28 @@ public class MainActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_refresh) {
-            // restart activity
-            finish();
-            startActivity(getIntent());
-            Toast.makeText(this, "Refresh done", Toast.LENGTH_LONG).show();
-            return true;
+        try {
+            if (id == R.id.action_refresh) { // restart activity
+                finish();
+                startActivity(getIntent());
+                Toast.makeText(this, "Refresh done", Toast.LENGTH_LONG).show();
+                return true;
+            } else if (id == R.id.action_backup) { // backup
+                backup();
+            } else if (id == R.id.action_restore) { // restore
+                restore();
+            }
+        }
+        catch(Exception e){
+            throw new RuntimeException(e);
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        // ignore back button
     }
 
 }

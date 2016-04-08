@@ -4,23 +4,37 @@
     tools:context=".MainActivity"
     android:orientation="vertical">
 
-    <ScrollView
-        android:layout_width="fill_parent"
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_weight="1"
-        android:fillViewport="true">
+        android:layout_weight="1">
 
-        <LinearLayout
-            android:id="@+id/ll"
-            android:orientation="vertical"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:focusable="true"
-            android:focusableInTouchMode="true">
-        </LinearLayout>
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:id="@+id/bg"
+            android:textSize="40sp"
+            android:gravity="center" />
 
-    </ScrollView>
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:id="@+id/ll"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:focusable="true"
+                android:focusableInTouchMode="true">
+            </LinearLayout>
+        </ScrollView>
+
+    </FrameLayout>
 
     <LinearLayout
         android:orientation="horizontal"
