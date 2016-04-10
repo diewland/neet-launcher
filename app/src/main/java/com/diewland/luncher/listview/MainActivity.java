@@ -50,7 +50,7 @@ public class MainActivity extends Activity {
 
     private String TAG = "DIEWLAND";
     private String backup_filename = "neet.dat";
-    private String deli = "#####";
+    private String deli = "###";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -297,7 +297,9 @@ public class MainActivity extends Activity {
         app_list.clear();
         while ((str = br.readLine()) != null) {
             String[] data = str.split(deli);
-            app_list.put(data[0], new Item(data[1], data[0], Integer.parseInt(data[2])));
+            if(data.length == 3){
+                app_list.put(data[0], new Item(data[1], data[0], Integer.parseInt(data[2])));
+            }
         }
         reload_items();
 
