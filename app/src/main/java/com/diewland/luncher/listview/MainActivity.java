@@ -84,11 +84,13 @@ public class MainActivity extends Activity {
         ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(), "Googling...", Toast.LENGTH_SHORT).show();
-                String q = txt_search.getText().toString();
-                Uri uri = Uri.parse("https://www.google.co.th/search?q=" + q);
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                startActivity(intent);
+                if(ll.getChildCount() == 0) {
+                    Toast.makeText(getApplicationContext(), "Googling...", Toast.LENGTH_SHORT).show();
+                    String q = txt_search.getText().toString();
+                    Uri uri = Uri.parse("https://www.google.co.th/search?q=" + q);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    startActivity(intent);
+                }
             }
         });
 
