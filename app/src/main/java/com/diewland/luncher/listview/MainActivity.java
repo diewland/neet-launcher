@@ -319,16 +319,16 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onPause() {
-        save_data();
         super.onPause();
+        save_data();
+        load_data();
+        reload_items();
     }
 
     @Override
     protected void onResume() {
-        load_data();
-        reload_items();
-        ll.requestFocus(); // prevent auto focus on search bar
         super.onResume();
+        ll.requestFocus(); // prevent auto focus on search bar
     }
 
     @Override
