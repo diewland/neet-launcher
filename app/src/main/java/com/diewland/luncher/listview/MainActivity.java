@@ -180,7 +180,8 @@ public class MainActivity extends Activity {
         }
 
         // draw text buttons
-        for(Item info : sorted_items){
+        for(int seq=0; seq<sorted_items.size(); seq++){
+            Item info = sorted_items.get(seq);
 
             Button btn = new Button(this);
             btn.setText(info.getTitle());
@@ -194,14 +195,13 @@ public class MainActivity extends Activity {
             Drawable d = new BitmapDrawable(getResources(), bitmap);
             d.setBounds(0, 0, d.getMinimumWidth(), d.getMinimumHeight());
             btn.setCompoundDrawablesWithIntrinsicBounds( null, null, d, null);
+            btn.setTag(seq);
 
             // click button
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Button b = (Button) v;
-                    String title = b.getText().toString();
-                    Item info = Util.get_info_from_title(app_list, title);
+                    Item info = sorted_items.get((Integer) v.getTag());
 
                     // collect app stat
                     info.click();
