@@ -37,6 +37,9 @@ import java.util.List;
 
 public class MainActivity extends Activity {
 
+    private String SORT_TYPE_SCORE = "SCORE";
+    private String SORT_TYPE_TS    = "TS";
+
     private TextView bg;
     private LinearLayout ll;
     private LinearLayout.LayoutParams lp;
@@ -47,6 +50,7 @@ public class MainActivity extends Activity {
     private HashMap<String, Drawable> icon_list;
     private List<Item> sorted_items;
     private SharedPreferences mPrefs;
+    private String sort_type = SORT_TYPE_SCORE;
 
     private String TAG = "DIEWLAND";
     private String backup_filename = "neet.dat";
@@ -126,8 +130,9 @@ public class MainActivity extends Activity {
         for(Item app : app_list.values()){
             String json = gson.toJson(app);
             prefsEditor.putString(app.getPackage(), json);
-            prefsEditor.commit();
         }
+        prefsEditor.putString("sort_type", sort_type);
+        prefsEditor.commit();
     }
 
     private void load_data(){
@@ -154,12 +159,14 @@ public class MainActivity extends Activity {
             }
             else {
                 Item app = gson.fromJson(json, Item.class);
-                app_list.put(pkg, new Item(title, pkg, app.getScore()));
+                app_list.put(pkg, new Item(title, pkg, app.getScore(), app.getTS()));
             }
 
             // collect icons
             icon_list.put(pkg, icon);
         }
+
+        sort_type = mPrefs.getString("sort_type", SORT_TYPE_SCORE);
     }
 
     private void reload_items(){
@@ -168,7 +175,7 @@ public class MainActivity extends Activity {
         ll.removeAllViews();
 
         // filter items
-        sorted_items = Util.score_sort(app_list.values());
+        sorted_items = Util.sort_by(sort_type, app_list.values());
         sorted_items = Util.filter(sorted_items, txt_search.getText().toString());
 
         // handle background text
@@ -271,6 +278,7 @@ public class MainActivity extends Activity {
             pw.println(app.getPackage()
                         + deli + app.getTitle()
                         + deli + app.getScore()
+                        + deli + app.getTS()
             );
         }
 
@@ -300,7 +308,10 @@ public class MainActivity extends Activity {
         while ((str = br.readLine()) != null) {
             String[] data = str.split(deli);
             if(data.length == 3){
-                app_list.put(data[0], new Item(data[1], data[0], Integer.parseInt(data[2])));
+                app_list.put(data[0], new Item(data[1], data[0], Integer.parseInt(data[2]), Long.valueOf(0)));
+            }
+            else if(data.length == 4){
+                app_list.put(data[0], new Item(data[1], data[0], Integer.parseInt(data[2]), Long.parseLong(data[3])));
             }
         }
         reload_items();
@@ -350,6 +361,16 @@ public class MainActivity extends Activity {
                 finish();
                 startActivity(getIntent());
                 Toast.makeText(this, "Refresh done", Toast.LENGTH_LONG).show();
+                return true;
+            } else if (id == R.id.action_sort_freq) { // sort by freq
+                sort_type = SORT_TYPE_SCORE;
+                reload_items();
+                Toast.makeText(this, "Sort by Frequency", Toast.LENGTH_LONG).show();
+                return true;
+            } else if (id == R.id.action_sort_ts) { // sort by ts
+                sort_type = SORT_TYPE_TS;
+                reload_items();
+                Toast.makeText(this, "Sort by Recent", Toast.LENGTH_LONG).show();
                 return true;
             } else if (id == R.id.action_backup) { // backup
                 backup();

@@ -1,7 +1,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
-    <item android:id="@+id/action_refresh" android:title="@string/action_refresh" android:orderInCategory="1" app:showAsAction="always" />
-    <item android:id="@+id/action_backup" android:title="@string/action_backup" android:orderInCategory="2" app:showAsAction="always" />
-    <item android:id="@+id/action_restore" android:title="@string/action_restore" android:orderInCategory="3" app:showAsAction="always" />
+    <item android:id="@+id/action_sort_freq" android:title="@string/action_sort_freq" android:orderInCategory="1" app:showAsAction="always" />
+    <item android:id="@+id/action_sort_ts" android:title="@string/action_sort_recent" android:orderInCategory="2" app:showAsAction="always" />
+    <item android:id="@+id/action_refresh" android:title="@string/action_refresh" android:orderInCategory="3" app:showAsAction="always" />
+    <item android:id="@+id/action_backup" android:title="@string/action_backup" android:orderInCategory="4" app:showAsAction="always" />
+    <item android:id="@+id/action_restore" android:title="@string/action_restore" android:orderInCategory="5" app:showAsAction="always" />
 </menu>

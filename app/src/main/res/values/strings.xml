@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">Neet Launcher</string>
 
-    <string name="hello_world">Hello world!</string>
+    <string name="action_sort_freq">Sort by Frequency</string>
+    <string name="action_sort_recent">Sort by Recent</string>
     <string name="action_refresh">Refresh</string>
     <string name="action_backup">Backup **</string>
     <string name="action_restore">Restore **</string>

@@ -8,17 +8,20 @@ public class Item {
     private String title;
     private String pkg;
     private int score;
+    private Long ts;
 
     public Item(String title, String pkg){
         this.title = title;
         this.pkg = pkg;
         this.score = 0;
+        this.ts = Long.valueOf(0);
     }
 
-    public Item(String title, String pkg, int score){
+    public Item(String title, String pkg, int score, long ts){
         this.title = title;
         this.pkg = pkg;
         this.score = score;
+        this.ts = ts;
     }
 
     public String getTitle(){
@@ -35,6 +38,15 @@ public class Item {
 
     public void click(){
         this.score++;
+        this.ts = getCurrentTS();
+    }
+
+    public long getCurrentTS(){
+        return System.currentTimeMillis()/1000;
+    }
+
+    public long getTS(){
+        return this.ts;
     }
 
     // test
@@ -42,11 +54,11 @@ public class Item {
 
         HashMap<String, Item> app_list = new HashMap<>();
 
-        Item a = new Item("apple",  "com.apple",    0);
-        Item b = new Item("banana", "com.banana",   0);
-        Item c = new Item("coconut","com.coconut",  0);
-        Item d = new Item("donut",  "com.donut",    2);
-        Item e = new Item("eletro", "com.eletro",   3);
+        Item a = new Item("apple",  "com.apple",    0, 0);
+        Item b = new Item("banana", "com.banana",   0, 0);
+        Item c = new Item("coconut","com.coconut",  0, 0);
+        Item d = new Item("donut",  "com.donut",    2, 0);
+        Item e = new Item("eletro", "com.eletro",   3, 0);
 
         app_list.put("com.coconut", c);
         app_list.put("com.banana", b);
@@ -57,7 +69,7 @@ public class Item {
         // sort by util
         List<Item> sorted_apps = Util.score_sort(app_list.values());
         for(Item app : sorted_apps){
-            System.out.println(app.getPackage() + "\t" + app.getTitle() + "\t" + app.getScore());
+            System.out.println(app.getPackage() + "\t" + app.getTitle() + "\t" + app.getScore() + "\t" + app.getTS());
         }
         System.out.println("--- 4 clicks of banana");
         b.click();
@@ -65,7 +77,7 @@ public class Item {
         b.click();
         b.click();
         for(Item app : Util.score_sort(app_list.values())){
-            System.out.println(app.getPackage() + "\t" + app.getTitle() + "\t" + app.getScore());
+            System.out.println(app.getPackage() + "\t" + app.getTitle() + "\t" + app.getScore() + "\t" + app.getTS());
         }
     }
 

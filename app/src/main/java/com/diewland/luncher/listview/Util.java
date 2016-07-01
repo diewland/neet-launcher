@@ -23,6 +23,15 @@ public class Util {
         return null;
     }
 
+    public static List<Item> sort_by(String sort_type, Collection<Item> items){
+        if(sort_type.equals("TS")){
+            return ts_sort(items);
+        }
+        else { // default: score
+            return score_sort(items);
+        }
+    }
+
     // http://stackoverflow.com/questions/780541/how-to-sort-a-hashmap-in-java
     public static List<Item> score_sort(Collection<Item> items){
         List<Item> sorted_items = new ArrayList<Item>(items);
@@ -31,6 +40,23 @@ public class Util {
                 if(o1.getScore() != o2.getScore()){
                     // sort by score first
                     return o2.getScore() - o1.getScore();
+                }
+                else {
+                    // else sort by alphabet
+                    return o1.getTitle().toLowerCase().compareTo(o2.getTitle().toLowerCase());
+                }
+            }
+        });
+        return sorted_items;
+    }
+
+    public static List<Item> ts_sort(Collection<Item> items){
+        List<Item> sorted_items = new ArrayList<Item>(items);
+        Collections.sort(sorted_items, new Comparator<Item>() {
+            public int compare(Item o1, Item o2) {
+                if(o1.getTS() != o2.getTS()){
+                    // sort by ts first
+                    return Long.valueOf(o2.getTS()).compareTo(Long.valueOf(o1.getTS()));
                 }
                 else {
                     // else sort by alphabet
